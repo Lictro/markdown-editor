@@ -19,6 +19,11 @@ export default function Preview({ content }: PreviewProps) {
             prose-pre:text-warm-gray-light
             prose-a:text-gold
             prose-blockquote:text-warm-gray
+            prose-ul:text-warm-gray-light
+            prose-ol:text-warm-gray-light
+            prose-li:text-warm-gray-light
+            prose-ul:marker:text-yellow-200
+            prose-ol:marker:text-yellow-200
         "
       >
         <ReactMarkdown>{content}</ReactMarkdown>
