@@ -33,9 +33,29 @@ export default function Home() {
     }
   };
 
+  const downloadFile = () => {
+    const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName.endsWith(".md") ? fileName : `${fileName}.md`;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
-      <Navbar filename={fileName} onFilenameChange={setFilename} />
+      <Navbar
+        filename={fileName}
+        onFilenameChange={setFilename}
+        onDownload={downloadFile}
+      />
       <div className="grid grid-cols-2 h-[calc(100vh-64px)]">
         <Editor
           value={markdown}

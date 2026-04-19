@@ -13,9 +13,7 @@ export default function Editor({
 }: EditorProps) {
   return (
     <div className="border-r h-full flex flex-col min-h-0">
-      <div className="py-2 px-4 bg-charcoal-dark shrink-0">
-        MARKDOWN
-      </div>
+      <div className="py-2 px-4 bg-charcoal-dark shrink-0">MARKDOWN</div>
 
       <textarea
         ref={textareaRef}
