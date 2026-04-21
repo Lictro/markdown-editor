@@ -1,3 +1,5 @@
+import { getPreviewMetrics } from "@/utils/EditorUtils";
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface PreviewProps {
@@ -11,6 +13,10 @@ export default function Preview({
   previewRef,
   onScroll,
 }: PreviewProps) {
+  const metrics = useMemo(() => {
+    return getPreviewMetrics(content);
+  }, [content]);
+
   return (
     <div className="h-full flex flex-col min-h-0">
       <div className="py-2 px-4 bg-charcoal-dark shrink-0">PREVIEW</div>
@@ -31,6 +37,7 @@ export default function Preview({
             prose-pre:text-warm-gray-light
             prose-a:text-gold
             prose-blockquote:text-warm-gray
+            prose-blockquote:border-l-gold
             prose-ul:text-warm-gray-light
             prose-ol:text-warm-gray-light
             prose-li:text-warm-gray-light
@@ -40,6 +47,15 @@ export default function Preview({
         >
           <ReactMarkdown>{content}</ReactMarkdown>
         </div>
+      </div>
+      <div className="px-4 py-2 text-xs bg-warm-gray-light text-charcoal-dark shrink-0 flex justify-end">
+        <span>
+          HTML{" "}
+          <strong>{metrics.characters}</strong> characters{" "}
+          <strong>{metrics.words}</strong> words{" "}
+          <strong>{metrics.paragraphs}</strong> paragraphs
+        </span>
+
       </div>
     </div>
   );
