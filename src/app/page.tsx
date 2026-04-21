@@ -1,53 +1,28 @@
 "use client";
 
 import Editor from "@/components/Editor";
+import EditorControls from "@/components/EditorControls";
 import Navbar from "@/components/Navbar";
 import Preview from "@/components/Preview";
-import { useState, useRef } from "react";
+import { useEditorState } from "@/hooks/useEditorState";
+import { useFileDownload } from "@/hooks/useFileDownload";
+import { useHistory } from "@/hooks/useHistory";
+import { useScrollSync } from "@/hooks/useScrollSync";
 
 export default function Home() {
-  const [markdown, setMarkdown] = useState("# Hello world");
-  const [fileName, setFilename] = useState("untitled.md");
+  const { fileName, setFilename, editorRef, previewRef } = useEditorState();
 
-  const editorRef = useRef<HTMLTextAreaElement | null>(null);
-  const previewRef = useRef<HTMLDivElement | null>(null);
+  const {
+    value: markdown,
+    setValue: setMarkdown,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useHistory("# Hello world");
 
-  const syncScroll = (source: "editor" | "preview") => {
-    const editor = editorRef.current;
-    const preview = previewRef.current;
-
-    if (!editor || !preview) return;
-
-    let ratio = 0;
-
-    if (source === "editor") {
-      ratio =
-        editor.scrollTop / (editor.scrollHeight - editor.clientHeight || 1);
-
-      preview.scrollTop = ratio * (preview.scrollHeight - preview.clientHeight);
-    } else {
-      ratio =
-        preview.scrollTop / (preview.scrollHeight - preview.clientHeight || 1);
-
-      editor.scrollTop = ratio * (editor.scrollHeight - editor.clientHeight);
-    }
-  };
-
-  const downloadFile = () => {
-    const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName.endsWith(".md") ? fileName : `${fileName}.md`;
-
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const { syncScroll } = useScrollSync(editorRef, previewRef);
+  const { downloadFile } = useFileDownload(markdown, fileName);
 
   return (
     <>
@@ -55,6 +30,12 @@ export default function Home() {
         filename={fileName}
         onFilenameChange={setFilename}
         onDownload={downloadFile}
+      />
+      <EditorControls
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
       />
       <div className="grid grid-cols-2 h-[calc(100vh-64px)]">
         <Editor

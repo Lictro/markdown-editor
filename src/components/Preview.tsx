@@ -50,12 +50,10 @@ export default function Preview({
       </div>
       <div className="px-4 py-2 text-xs bg-warm-gray-light text-charcoal-dark shrink-0 flex justify-end">
         <span>
-          HTML{" "}
-          <strong>{metrics.characters}</strong> characters{" "}
+          HTML <strong>{metrics.characters}</strong> characters{" "}
           <strong>{metrics.words}</strong> words{" "}
           <strong>{metrics.paragraphs}</strong> paragraphs
         </span>
-
       </div>
     </div>
   );
