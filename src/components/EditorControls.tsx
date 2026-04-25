@@ -15,8 +15,17 @@ import {
   TextStrikethroughIcon,
   type IconWeight,
 } from "@phosphor-icons/react";
-import type { RefObject } from "react";
+import { useEffect, type RefObject } from "react";
 import ToolbarButton from "./ToolbarButton";
+import {
+  transformSelection,
+  prefixSelectionLines,
+  insertTable,
+  insertLink,
+  insertImage,
+  insertHeading,
+  insertCode,
+} from "@/utils/EditorUtils";
 
 interface EditorControlsProps {
   onUndo: () => void;
@@ -27,275 +36,6 @@ interface EditorControlsProps {
   setValue: (value: string) => void;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   openModal: () => void;
-}
-
-function updateValueAndSelection(
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-  newValue: string,
-  selectionStart: number,
-  selectionEnd: number,
-) {
-  setValue(newValue);
-
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  requestAnimationFrame(() => {
-    textarea.focus();
-    textarea.setSelectionRange(selectionStart, selectionEnd);
-  });
-}
-
-function transformSelection(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-  before: string,
-  after: string,
-  placeholder = "text",
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-  const content = selectedText || placeholder;
-  const replacement = `${before}${content}${after}`;
-  const newValue =
-    value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-
-  const newSelectionStart = selectedText
-    ? selectionStart
-    : selectionStart + before.length;
-  const newSelectionEnd = selectedText
-    ? selectionStart + replacement.length
-    : selectionStart + before.length + placeholder.length;
-
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    newSelectionStart,
-    newSelectionEnd,
-  );
-}
-
-function prefixSelectionLines(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-  prefix: string,
-  placeholder = "text",
-  ordered = false,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-
-  if (!selectedText) {
-    const replacement = ordered
-      ? `1. ${placeholder}`
-      : `${prefix}${placeholder}`;
-    const newValue =
-      value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-    const newSelectionStart = selectionStart + prefix.length;
-    const newSelectionEnd = newSelectionStart + placeholder.length;
-    updateValueAndSelection(
-      textareaRef,
-      setValue,
-      newValue,
-      newSelectionStart,
-      newSelectionEnd,
-    );
-    return;
-  }
-
-  const lines = selectedText.split("\n");
-  const transformed = lines
-    .map((line, index) => {
-      if (ordered) {
-        return `${index + 1}. ${line || placeholder}`;
-      }
-      return `${prefix}${line || placeholder}`;
-    })
-    .join("\n");
-
-  const newValue =
-    value.slice(0, selectionStart) + transformed + value.slice(selectionEnd);
-  const newSelectionStart = selectionStart;
-  const newSelectionEnd = selectionStart + transformed.length;
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    newSelectionStart,
-    newSelectionEnd,
-  );
-}
-
-function insertTable(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const tableMarkdown =
-    "| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |";
-  const newValue =
-    value.slice(0, selectionStart) + tableMarkdown + value.slice(selectionEnd);
-  const headerStart = selectionStart + 2;
-  const headerEnd = headerStart + 6; // selects first Header
-
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    headerStart,
-    headerEnd,
-  );
-}
-
-function insertLink(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-  const linkText = selectedText || "text";
-  const replacement = `[${linkText}](url)`;
-  const newValue =
-    value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-
-  const urlStart = selectionStart + replacement.indexOf("url");
-  const urlEnd = urlStart + 3;
-  const textStart = selectionStart + 1;
-  const textEnd = textStart + linkText.length;
-
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    selectedText ? urlStart : textStart,
-    selectedText ? urlEnd : textEnd,
-  );
-}
-
-function insertImage(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-  const altText = selectedText || "alt";
-  const replacement = `![${altText}](url)`;
-  const newValue =
-    value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-
-  const urlStart = selectionStart + replacement.indexOf("url");
-  const urlEnd = urlStart + 3;
-  const altStart = selectionStart + 2;
-  const altEnd = altStart + altText.length;
-
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    selectedText ? urlStart : altStart,
-    selectedText ? urlEnd : altEnd,
-  );
-}
-
-function insertHeading(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-  level = 2,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const prefix = "#".repeat(level) + " ";
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-
-  if (!selectedText) {
-    const replacement = `${prefix}text`;
-    const newValue =
-      value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-    const selectionStartInner = selectionStart + prefix.length;
-    const selectionEndInner = selectionStartInner + 4;
-    updateValueAndSelection(
-      textareaRef,
-      setValue,
-      newValue,
-      selectionStartInner,
-      selectionEndInner,
-    );
-    return;
-  }
-
-  const beforeSelection = value.slice(0, selectionStart);
-  const afterSelection = value.slice(selectionEnd);
-  const newValue = beforeSelection + prefix + selectedText + afterSelection;
-  const newSelectionStart = selectionStart;
-  const newSelectionEnd = selectionStart + prefix.length + selectedText.length;
-  updateValueAndSelection(
-    textareaRef,
-    setValue,
-    newValue,
-    newSelectionStart,
-    newSelectionEnd,
-  );
-}
-
-function insertCode(
-  value: string,
-  textareaRef: RefObject<HTMLTextAreaElement | null>,
-  setValue: (value: string) => void,
-) {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-
-  const { selectionStart, selectionEnd } = textarea;
-  const selectedText = value.slice(selectionStart, selectionEnd);
-
-  if (!selectedText) {
-    transformSelection(value, textareaRef, setValue, "```\n", "\n```", "code");
-    return;
-  }
-
-  const isMultiline = selectedText.includes("\n");
-  if (isMultiline) {
-    const replacement = `\`\`\`\n${selectedText}\n\`\`\``;
-    const newValue =
-      value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
-    const newSelectionStart = selectionStart;
-    const newSelectionEnd = selectionStart + replacement.length;
-    updateValueAndSelection(
-      textareaRef,
-      setValue,
-      newValue,
-      newSelectionStart,
-      newSelectionEnd,
-    );
-    return;
-  }
-
-  transformSelection(value, textareaRef, setValue, "```\n", "\n```");
 }
 
 type ButtonConfig = {
@@ -387,6 +127,62 @@ export default function EditorControls({
       tooltip: "Image",
     },
   ];
+
+  useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (document.activeElement !== textareaRef.current) return;
+        const isMac = navigator.platform.toUpperCase().includes("MAC");
+        const cmd = isMac ? e.metaKey : e.ctrlKey;
+  
+        if (!cmd || !e.shiftKey) return;
+  
+        const key = e.key.toLowerCase();
+  
+        e.preventDefault();
+  
+        switch (key) {
+          case "b":
+            transformSelection(value, textareaRef, setValue, "**", "**", "text");
+            break;
+          case "i":
+            transformSelection(value, textareaRef, setValue, "*", "*", "text");
+            break;
+          case "s":
+            transformSelection(value, textareaRef, setValue, "~~", "~~", "text");
+            break;
+          case "l":
+            insertLink(value, textareaRef, setValue);
+            break;
+          case "o":
+            prefixSelectionLines(value, textareaRef, setValue, "1. ", "item", true);
+            break;
+          case "u":
+            prefixSelectionLines(value, textareaRef, setValue, "- ", "item");
+            break;
+          case "k":
+            insertCode(value, textareaRef, setValue);
+            break;
+          case "q":
+            prefixSelectionLines(value, textareaRef, setValue, "> ", "text");
+            break;
+          case "h":
+            insertHeading(value, textareaRef, setValue, 2);
+            break;
+          case "t":
+            insertTable(value, textareaRef, setValue);
+            break;
+          case "g":
+            insertImage(value, textareaRef, setValue);
+            break;
+          default:
+            return;
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [value, setValue, textareaRef]);
+
   return (
     <div className="flex flex-wrap items-center gap-2 bg-gold px-6 pb-3">
       <ToolbarButton
@@ -404,6 +200,7 @@ export default function EditorControls({
       {buttonConfigs.map((config, index) => {
         return (
           <ToolbarButton
+            key={index}
             icon={config.icon}
             tooltip={config.tooltip}
             disabled={config.disabled}
