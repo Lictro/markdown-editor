@@ -26,17 +26,20 @@ A modern, responsive web-based Markdown editor with live preview, built with Nex
 ## Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone <repository-url>
    cd markdown-editor
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Run the development server**:
+
    ```bash
    npm run dev
    ```
@@ -55,13 +58,15 @@ A modern, responsive web-based Markdown editor with live preview, built with Nex
 
 Start typing in the editor panel. Use standard Markdown syntax:
 
-```markdown
+````markdown
 # Heading 1
+
 ## Heading 2
 
-**Bold text** and *italic text*.
+**Bold text** and _italic text_.
 
 - Unordered list item
+
 1. Ordered list item
 
 `inline code`
@@ -70,10 +75,12 @@ Start typing in the editor panel. Use standard Markdown syntax:
 // Code block
 console.log("Hello, world!");
 ```
+````
 
 [Link text](https://example.com)
 
 ![Alt text](image-url)
+
 ```
 
 ### Using the Toolbar
@@ -102,30 +109,32 @@ The bottom bar shows real-time statistics:
 ## Project Structure
 
 ```
+
 markdown-editor/
 ├── src/
-│   ├── app/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── components/
-│   │       ├── Editor.tsx
-│   │       ├── EditorControls.tsx
-│   │       ├── MetricsBar.tsx
-│   │       ├── Navbar.tsx
-│   │       └── Preview.tsx
-│   ├── hooks/
-│   │   ├── useEditorState.ts
-│   │   ├── useFileDownload.ts
-│   │   ├── useHistory.ts
-│   │   └── useScrollSync.ts
-│   └── utils/
-│       └── EditorUtils.ts
+│ ├── app/
+│ │ ├── globals.css
+│ │ ├── layout.tsx
+│ │ ├── page.tsx
+│ │ └── components/
+│ │ ├── Editor.tsx
+│ │ ├── EditorControls.tsx
+│ │ ├── MetricsBar.tsx
+│ │ ├── Navbar.tsx
+│ │ └── Preview.tsx
+│ ├── hooks/
+│ │ ├── useEditorState.ts
+│ │ ├── useFileDownload.ts
+│ │ ├── useHistory.ts
+│ │ └── useScrollSync.ts
+│ └── utils/
+│ └── EditorUtils.ts
 ├── public/
 ├── package.json
 ├── tailwind.config.js
 ├── next.config.ts
 └── README.md
+
 ```
 
 ## Future Improvements
@@ -141,3 +150,4 @@ markdown-editor/
 ---
 
 Built with ❤️ using Next.js and React. Contributions welcome!
+```

@@ -300,8 +300,10 @@ type ButtonConfig = {
   action: (
     value: string,
     setValue: (value: string) => void,
-    textareaRef: RefObject<HTMLTextAreaElement | null>
+    textareaRef: RefObject<HTMLTextAreaElement | null>,
   ) => void;
+  tooltip: string;
+  disabled?: boolean;
 };
 
 export default function EditorControls({
@@ -318,56 +320,67 @@ export default function EditorControls({
       icon: TextBIcon,
       action: (value, setValue, textareaRef) =>
         transformSelection(value, textareaRef, setValue, "**", "**", "text"),
+      tooltip: "Bold",
     },
     {
       icon: TextItalicIcon,
       action: (value, setValue, textareaRef) =>
         transformSelection(value, textareaRef, setValue, "*", "*", "text"),
+      tooltip: "Italic",
     },
     {
       icon: TextHIcon,
       action: (value, setValue, textareaRef) =>
         insertHeading(value, textareaRef, setValue, 2),
+      tooltip: "Heading",
     },
     {
       icon: TextStrikethroughIcon,
       action: (value, setValue, textareaRef) =>
         transformSelection(value, textareaRef, setValue, "~~", "~~", "text"),
+      tooltip: "Strikethrough",
     },
     {
       icon: ListBulletsIcon,
       action: (value, setValue, textareaRef) =>
         prefixSelectionLines(value, textareaRef, setValue, "- ", "item"),
+      tooltip: "Bullet List",
     },
     {
       icon: ListNumbersIcon,
       action: (value, setValue, textareaRef) =>
         prefixSelectionLines(value, textareaRef, setValue, "1. ", "item", true),
+      tooltip: "Numbered List",
     },
     {
       icon: QuotesIcon,
       action: (value, setValue, textareaRef) =>
         prefixSelectionLines(value, textareaRef, setValue, "> ", "text"),
+      tooltip: "Blockquote",
     },
     {
       icon: CodeIcon,
       action: (value, setValue, textareaRef) =>
         insertCode(value, textareaRef, setValue),
+      tooltip: "Code",
     },
     {
       icon: TableIcon,
       action: (value, setValue, textareaRef) =>
         insertTable(value, textareaRef, setValue),
+      tooltip: "Table",
     },
     {
       icon: LinkSimpleIcon,
       action: (value, setValue, textareaRef) =>
         insertLink(value, textareaRef, setValue),
+      tooltip: "Link",
     },
     {
       icon: ImageIcon,
       action: (value, setValue, textareaRef) =>
         insertImage(value, textareaRef, setValue),
+      tooltip: "Image",
     },
   ];
   return (
@@ -391,14 +404,20 @@ export default function EditorControls({
       {buttonConfigs.map((config, index) => {
         const Icon = config.icon;
         return (
-          <button
-            key={index}
-            onClick={() => config.action(value, setValue, textareaRef)}
-            type="button"
-            className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-          >
-            <Icon size={20} weight="bold" />
-          </button>
+          <div key={index} className="relative group">
+            <button
+              disabled={config.disabled}
+              onClick={() => config.action(value, setValue, textareaRef)}
+              type="button"
+              className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
+            >
+              <Icon size={20} weight="bold" />
+            </button>
+
+            <div className="absolute top-full mt-0.5 left-0 hidden group-hover:block text-xs bg-charcoal text-gold px-2 py-1 rounded whitespace-nowrap">
+              {config.tooltip}
+            </div>
+          </div>
         );
       })}
     </div>

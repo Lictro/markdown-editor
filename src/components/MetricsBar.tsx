@@ -29,7 +29,9 @@ export default function MetricsBar({
         Markdown <strong>{bytes}</strong> bytes <strong>{words}</strong> words{" "}
         <strong>{lines}</strong> lines{" "}
         <span className="ml-2">
-          <strong>Ln {currentLine}, Col {currentCol}</strong>
+          <strong>
+            Ln {currentLine}, Col {currentCol}
+          </strong>
         </span>
       </span>
 
