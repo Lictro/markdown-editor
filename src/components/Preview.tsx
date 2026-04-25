@@ -1,6 +1,7 @@
 import { getPreviewMetrics } from "@/utils/EditorUtils";
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface PreviewProps {
   content: string;
@@ -32,9 +33,7 @@ export default function Preview({
             prose-headings:text-warm-gray-light
             prose-p:text-warm-gray-light
             prose-strong:text-warm-gray-light
-            prose-code:text-gold
             prose-pre:bg-charcoal-dark
-            prose-pre:text-warm-gray-light
             prose-a:text-gold
             prose-blockquote:text-warm-gray
             prose-blockquote:border-l-gold
@@ -43,9 +42,14 @@ export default function Preview({
             prose-li:text-warm-gray-light
             prose-ul:marker:text-yellow-200
             prose-ol:marker:text-yellow-200
+            prose-th:text-warm-gray-light
+            prose-th:font-bold
+            prose-td:text-warm-gray-light
         "
         >
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {content}
+          </ReactMarkdown>
         </div>
       </div>
       <div className="px-4 py-2 text-xs bg-warm-gray-light text-charcoal-dark shrink-0 flex justify-end">
