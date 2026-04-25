@@ -56,8 +56,6 @@ export default function Home() {
         value={markdown}
         setValue={setMarkdown}
         textareaRef={editorRef}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
       />
 
       <main className="flex-1 overflow-hidden">

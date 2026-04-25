@@ -12,6 +12,7 @@ import {
   TextHIcon,
   TextItalicIcon,
   TextStrikethroughIcon,
+  type IconWeight,
 } from "@phosphor-icons/react";
 import type { RefObject } from "react";
 
@@ -23,8 +24,6 @@ interface EditorControlsProps {
   value: string;
   setValue: (value: string) => void;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
-  viewMode: "editor" | "preview";
-  setViewMode: (mode: "editor" | "preview") => void;
 }
 
 function updateValueAndSelection(
@@ -272,7 +271,7 @@ function insertCode(
   const selectedText = value.slice(selectionStart, selectionEnd);
 
   if (!selectedText) {
-    transformSelection(value, textareaRef, setValue, "`", "`", "code");
+    transformSelection(value, textareaRef, setValue, "```\n", "\n```", "code");
     return;
   }
 
@@ -293,8 +292,17 @@ function insertCode(
     return;
   }
 
-  transformSelection(value, textareaRef, setValue, "`", "`");
+  transformSelection(value, textareaRef, setValue, "```\n", "\n```");
 }
+
+type ButtonConfig = {
+  icon: React.ComponentType<{ size?: number; weight?: IconWeight }>;
+  action: (
+    value: string,
+    setValue: (value: string) => void,
+    textareaRef: RefObject<HTMLTextAreaElement | null>
+  ) => void;
+};
 
 export default function EditorControls({
   onUndo,
@@ -304,9 +312,64 @@ export default function EditorControls({
   value,
   setValue,
   textareaRef,
-  viewMode,
-  setViewMode,
 }: EditorControlsProps) {
+  const buttonConfigs: ButtonConfig[] = [
+    {
+      icon: TextBIcon,
+      action: (value, setValue, textareaRef) =>
+        transformSelection(value, textareaRef, setValue, "**", "**", "text"),
+    },
+    {
+      icon: TextItalicIcon,
+      action: (value, setValue, textareaRef) =>
+        transformSelection(value, textareaRef, setValue, "*", "*", "text"),
+    },
+    {
+      icon: TextHIcon,
+      action: (value, setValue, textareaRef) =>
+        insertHeading(value, textareaRef, setValue, 2),
+    },
+    {
+      icon: TextStrikethroughIcon,
+      action: (value, setValue, textareaRef) =>
+        transformSelection(value, textareaRef, setValue, "~~", "~~", "text"),
+    },
+    {
+      icon: ListBulletsIcon,
+      action: (value, setValue, textareaRef) =>
+        prefixSelectionLines(value, textareaRef, setValue, "- ", "item"),
+    },
+    {
+      icon: ListNumbersIcon,
+      action: (value, setValue, textareaRef) =>
+        prefixSelectionLines(value, textareaRef, setValue, "1. ", "item", true),
+    },
+    {
+      icon: QuotesIcon,
+      action: (value, setValue, textareaRef) =>
+        prefixSelectionLines(value, textareaRef, setValue, "> ", "text"),
+    },
+    {
+      icon: CodeIcon,
+      action: (value, setValue, textareaRef) =>
+        insertCode(value, textareaRef, setValue),
+    },
+    {
+      icon: TableIcon,
+      action: (value, setValue, textareaRef) =>
+        insertTable(value, textareaRef, setValue),
+    },
+    {
+      icon: LinkSimpleIcon,
+      action: (value, setValue, textareaRef) =>
+        insertLink(value, textareaRef, setValue),
+    },
+    {
+      icon: ImageIcon,
+      action: (value, setValue, textareaRef) =>
+        insertImage(value, textareaRef, setValue),
+    },
+  ];
   return (
     <div className="flex flex-wrap items-center gap-2 bg-gold px-6 pb-3">
       <button
@@ -325,102 +388,19 @@ export default function EditorControls({
       >
         <ArrowArcRightIcon size={20} weight="bold" />
       </button>
-      <button
-        onClick={() =>
-          transformSelection(value, textareaRef, setValue, "**", "**", "text")
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <TextBIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() =>
-          transformSelection(value, textareaRef, setValue, "*", "*", "text")
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <TextItalicIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() => insertHeading(value, textareaRef, setValue, 2)}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <TextHIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() =>
-          transformSelection(value, textareaRef, setValue, "~~", "~~", "text")
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <TextStrikethroughIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() =>
-          prefixSelectionLines(value, textareaRef, setValue, "- ", "item")
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <ListBulletsIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() =>
-          prefixSelectionLines(
-            value,
-            textareaRef,
-            setValue,
-            "1. ",
-            "item",
-            true,
-          )
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <ListNumbersIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() =>
-          prefixSelectionLines(value, textareaRef, setValue, "> ", "text")
-        }
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <QuotesIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() => insertCode(value, textareaRef, setValue)}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <CodeIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() => insertTable(value, textareaRef, setValue)}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <TableIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() => insertLink(value, textareaRef, setValue)}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <LinkSimpleIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={() => insertImage(value, textareaRef, setValue)}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-      >
-        <ImageIcon size={20} weight="bold" />
-      </button>
+      {buttonConfigs.map((config, index) => {
+        const Icon = config.icon;
+        return (
+          <button
+            key={index}
+            onClick={() => config.action(value, setValue, textareaRef)}
+            type="button"
+            className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
+          >
+            <Icon size={20} weight="bold" />
+          </button>
+        );
+      })}
     </div>
   );
 }
