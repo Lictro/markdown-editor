@@ -10,8 +10,6 @@ import { useHistory } from "@/hooks/useHistory";
 import { useScrollSync } from "@/hooks/useScrollSync";
 
 export default function Home() {
-  const { fileName, setFilename, editorRef, previewRef } = useEditorState();
-
   const {
     value: markdown,
     setValue: setMarkdown,
@@ -21,6 +19,7 @@ export default function Home() {
     canRedo,
   } = useHistory("# Hello world");
 
+  const { fileName, setFilename, editorRef, previewRef } = useEditorState();
   const { syncScroll } = useScrollSync(editorRef, previewRef);
   const { downloadFile } = useFileDownload(markdown, fileName);
 
@@ -36,6 +35,9 @@ export default function Home() {
         onRedo={redo}
         canUndo={canUndo}
         canRedo={canRedo}
+        value={markdown}
+        setValue={setMarkdown}
+        textareaRef={editorRef}
       />
       <div className="grid grid-cols-2 h-[calc(100vh-64px)]">
         <Editor
