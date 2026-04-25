@@ -1,4 +1,18 @@
-import { ArrowArcLeftIcon, ArrowArcRightIcon, CodeIcon, ImageIcon, LinkSimpleIcon, ListBulletsIcon, ListNumbersIcon, QuotesIcon, TableIcon, TextBIcon, TextHIcon, TextItalicIcon, TextStrikethroughIcon } from "@phosphor-icons/react";
+import {
+  ArrowArcLeftIcon,
+  ArrowArcRightIcon,
+  CodeIcon,
+  ImageIcon,
+  LinkSimpleIcon,
+  ListBulletsIcon,
+  ListNumbersIcon,
+  QuotesIcon,
+  TableIcon,
+  TextBIcon,
+  TextHIcon,
+  TextItalicIcon,
+  TextStrikethroughIcon,
+} from "@phosphor-icons/react";
 import type { RefObject } from "react";
 
 interface EditorControlsProps {
@@ -9,6 +23,8 @@ interface EditorControlsProps {
   value: string;
   setValue: (value: string) => void;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  viewMode: "editor" | "preview";
+  setViewMode: (mode: "editor" | "preview") => void;
 }
 
 function updateValueAndSelection(
@@ -288,6 +304,8 @@ export default function EditorControls({
   value,
   setValue,
   textareaRef,
+  viewMode,
+  setViewMode,
 }: EditorControlsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2 bg-gold px-6 pb-3">

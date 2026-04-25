@@ -1,5 +1,4 @@
-import { getPreviewMetrics } from "@/utils/EditorUtils";
-import { useMemo } from "react";
+import { EyeSlashIcon } from "@phosphor-icons/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -7,20 +6,27 @@ interface PreviewProps {
   content: string;
   previewRef: React.RefObject<HTMLDivElement | null>;
   onScroll: () => void;
+  setViewMode: (mode: "editor" | "preview") => void;
 }
 
 export default function Preview({
   content,
   previewRef,
   onScroll,
+  setViewMode,
 }: PreviewProps) {
-  const metrics = useMemo(() => {
-    return getPreviewMetrics(content);
-  }, [content]);
-
   return (
     <div className="h-full flex flex-col min-h-0">
-      <div className="py-2 px-4 bg-charcoal-dark shrink-0">PREVIEW</div>
+      <div className="py-2 px-4 bg-charcoal-dark shrink-0 flex justify-between items-center">
+        <span>PREVIEW</span>
+        <button
+          onClick={() => setViewMode("editor")}
+          type="button"
+          className="md:hidden p-1 hover:bg-charcoal-light rounded text-warm-gray-light text-xs"
+        >
+          <EyeSlashIcon size={20} weight="bold" />
+        </button>
+      </div>
 
       <div
         ref={previewRef}
@@ -47,17 +53,8 @@ export default function Preview({
             prose-td:text-warm-gray-light
         "
         >
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {content}
-          </ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </div>
-      </div>
-      <div className="px-4 py-2 text-xs bg-warm-gray-light text-charcoal-dark shrink-0 flex justify-end">
-        <span>
-          HTML <strong>{metrics.characters}</strong> characters{" "}
-          <strong>{metrics.words}</strong> words{" "}
-          <strong>{metrics.paragraphs}</strong> paragraphs
-        </span>
       </div>
     </div>
   );
