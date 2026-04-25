@@ -6,6 +6,7 @@ import {
   LinkSimpleIcon,
   ListBulletsIcon,
   ListNumbersIcon,
+  QuestionIcon,
   QuotesIcon,
   TableIcon,
   TextBIcon,
@@ -15,6 +16,7 @@ import {
   type IconWeight,
 } from "@phosphor-icons/react";
 import type { RefObject } from "react";
+import ToolbarButton from "./ToolbarButton";
 
 interface EditorControlsProps {
   onUndo: () => void;
@@ -24,6 +26,7 @@ interface EditorControlsProps {
   value: string;
   setValue: (value: string) => void;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  openModal: () => void;
 }
 
 function updateValueAndSelection(
@@ -314,6 +317,7 @@ export default function EditorControls({
   value,
   setValue,
   textareaRef,
+  openModal,
 }: EditorControlsProps) {
   const buttonConfigs: ButtonConfig[] = [
     {
@@ -385,41 +389,35 @@ export default function EditorControls({
   ];
   return (
     <div className="flex flex-wrap items-center gap-2 bg-gold px-6 pb-3">
-      <button
-        onClick={onUndo}
+      <ToolbarButton
+        icon={ArrowArcLeftIcon}
+        tooltip="Undo"
         disabled={!canUndo}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded disabled:opacity-40 text-charcoal-dark"
-      >
-        <ArrowArcLeftIcon size={20} weight="bold" />
-      </button>
-      <button
-        onClick={onRedo}
+        onClick={onUndo}
+      />
+      <ToolbarButton
+        icon={ArrowArcRightIcon}
+        tooltip="Redo"
         disabled={!canRedo}
-        type="button"
-        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded disabled:opacity-40 text-charcoal-dark"
-      >
-        <ArrowArcRightIcon size={20} weight="bold" />
-      </button>
+        onClick={onRedo}
+      />
       {buttonConfigs.map((config, index) => {
-        const Icon = config.icon;
         return (
-          <div key={index} className="relative group">
-            <button
-              disabled={config.disabled}
-              onClick={() => config.action(value, setValue, textareaRef)}
-              type="button"
-              className="p-2 hover:bg-charcoal-dark hover:text-gold rounded text-charcoal-dark"
-            >
-              <Icon size={20} weight="bold" />
-            </button>
-
-            <div className="absolute top-full mt-0.5 left-0 hidden group-hover:block text-xs bg-charcoal text-gold px-2 py-1 rounded whitespace-nowrap">
-              {config.tooltip}
-            </div>
-          </div>
+          <ToolbarButton
+            icon={config.icon}
+            tooltip={config.tooltip}
+            disabled={config.disabled}
+            onClick={() => config.action(value, setValue, textareaRef)}
+          />
         );
       })}
+      <button
+        type="button"
+        className="p-2 hover:bg-charcoal-dark hover:text-gold rounded disabled:opacity-40 text-charcoal-dark"
+        onClick={openModal}
+      >
+        <QuestionIcon size={20} weight="bold" />
+      </button>
     </div>
   );
 }

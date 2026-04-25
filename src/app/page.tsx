@@ -5,6 +5,7 @@ import EditorControls from "@/components/EditorControls";
 import MetricsBar from "@/components/MetricsBar";
 import Navbar from "@/components/Navbar";
 import Preview from "@/components/Preview";
+import ShortcutsDialog from "@/components/ShortcutsDialog";
 import { getMetrics, getPreviewMetrics } from "@/utils/EditorUtils";
 import { useEditorState } from "@/hooks/useEditorState";
 import { useFileDownload } from "@/hooks/useFileDownload";
@@ -27,6 +28,7 @@ export default function Home() {
   const { downloadFile } = useFileDownload(markdown, fileName);
   const [viewMode, setViewMode] = useState<"editor" | "preview">("editor");
   const [cursorUpdateTrigger, setCursorUpdateTrigger] = useState(0);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const handleCursorMove = useCallback(() => {
     setCursorUpdateTrigger((prev) => prev + 1);
@@ -56,6 +58,11 @@ export default function Home() {
         value={markdown}
         setValue={setMarkdown}
         textareaRef={editorRef}
+        openModal={() => setIsShortcutsOpen(true)}
+      />
+      <ShortcutsDialog
+        open={isShortcutsOpen}
+        onOpenChange={setIsShortcutsOpen}
       />
 
       <main className="flex-1 overflow-hidden">
