@@ -57,7 +57,7 @@ export default function Navbar({
         className="flex items-center justify-center gap-2 bg-charcoal text-gold px-4 py-1.5 rounded hover:opacity-80 transition cursor-pointer"
       >
         <DownloadSimpleIcon size={18} />
-        <span>Download</span>
+        <span className="hidden md:inline">Download</span>
       </button>
     </nav>
   );
