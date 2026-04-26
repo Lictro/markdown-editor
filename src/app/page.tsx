@@ -65,43 +65,37 @@ export default function Home() {
         onOpenChange={setIsShortcutsOpen}
       />
 
-      <main className="flex-1 overflow-hidden">
-        <div className="w-full h-full md:grid md:grid-cols-2">
-          <div
-            className={`md:col-span-1 ${viewMode === "preview" ? "hidden md:block" : ""}`}
-          >
-            <Editor
-              value={markdown}
-              onChange={setMarkdown}
-              textareaRef={editorRef}
-              onScroll={() => syncScroll("editor")}
-              onCursorMove={handleCursorMove}
-              setViewMode={setViewMode}
-            />
-          </div>
-          <div
-            className={`md:col-span-1 ${viewMode === "editor" ? "hidden md:block" : ""}`}
-          >
-            <Preview
-              content={markdown}
-              setViewMode={setViewMode}
-              previewRef={previewRef}
-              onScroll={() => syncScroll("preview")}
-            />
-          </div>
+      <div className="flex-1 min-h-0 flex flex-col">
+        <div className="grid grid-cols-2 h-full min-h-0 scrollbar">
+          <Editor
+            value={markdown}
+            onChange={setMarkdown}
+            textareaRef={editorRef}
+            onScroll={() => syncScroll("editor")}
+            onCursorMove={handleCursorMove}
+            setViewMode={setViewMode}
+          />
+          <Preview
+            content={markdown}
+            setViewMode={setViewMode}
+            previewRef={previewRef}
+            onScroll={() => syncScroll("preview")}
+          />
         </div>
-      </main>
 
-      <MetricsBar
-        bytes={metrics.bytes}
-        characters={previewMetrics.characters}
-        paragraphs={previewMetrics.paragraphs}
-        words={metrics.words}
-        lines={metrics.lines}
-        currentLine={metrics.currentLine}
-        currentCol={metrics.currentCol}
-        viewMode={viewMode}
-      />
+        <div className="sticky bottom-0 z-20">
+          <MetricsBar
+            bytes={metrics.bytes}
+            characters={previewMetrics.characters}
+            paragraphs={previewMetrics.paragraphs}
+            words={metrics.words}
+            lines={metrics.lines}
+            currentLine={metrics.currentLine}
+            currentCol={metrics.currentCol}
+            viewMode={viewMode}
+          />
+        </div>
+      </div>
     </div>
   );
 }

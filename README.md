@@ -52,37 +52,6 @@ A modern, responsive web-based Markdown editor with live preview, built with Nex
    npm start
    ```
 
-## Usage
-
-### Writing Markdown
-
-Start typing in the editor panel. Use standard Markdown syntax:
-
-````markdown
-# Heading 1
-
-## Heading 2
-
-**Bold text** and _italic text_.
-
-- Unordered list item
-
-1. Ordered list item
-
-`inline code`
-
-```javascript
-// Code block
-console.log("Hello, world!");
-```
-````
-
-[Link text](https://example.com)
-
-![Alt text](image-url)
-
-```
-
 ### Using the Toolbar
 
 The toolbar above the editor provides quick formatting buttons:
@@ -149,5 +118,6 @@ markdown-editor/
 
 ---
 
+```
 Built with ❤️ using Next.js and React. Contributions welcome!
 ```
