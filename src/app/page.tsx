@@ -66,21 +66,29 @@ export default function Home() {
       />
 
       <div className="flex-1 min-h-0 flex flex-col">
-        <div className="grid grid-cols-2 h-full min-h-0 scrollbar">
-          <Editor
-            value={markdown}
-            onChange={setMarkdown}
-            textareaRef={editorRef}
-            onScroll={() => syncScroll("editor")}
-            onCursorMove={handleCursorMove}
-            setViewMode={setViewMode}
-          />
-          <Preview
-            content={markdown}
-            setViewMode={setViewMode}
-            previewRef={previewRef}
-            onScroll={() => syncScroll("preview")}
-          />
+        <div className="md:grid md:grid-cols-2 h-full min-h-0 scrollbar">
+          <div
+            className={`h-full md:col-span-1 ${viewMode === "preview" ? "hidden md:block" : ""}`}
+          >
+            <Editor
+              value={markdown}
+              onChange={setMarkdown}
+              textareaRef={editorRef}
+              onScroll={() => syncScroll("editor")}
+              onCursorMove={handleCursorMove}
+              setViewMode={setViewMode}
+            />
+          </div>
+          <div
+            className={`h-full md:col-span-1 ${viewMode === "editor" ? "hidden md:block" : ""}`}
+          >
+            <Preview
+              content={markdown}
+              setViewMode={setViewMode}
+              previewRef={previewRef}
+              onScroll={() => syncScroll("preview")}
+            />
+          </div>
         </div>
 
         <div className="sticky bottom-0 z-20">
