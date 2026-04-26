@@ -129,59 +129,66 @@ export default function EditorControls({
   ];
 
   useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (document.activeElement !== textareaRef.current) return;
-        const isMac = navigator.platform.toUpperCase().includes("MAC");
-        const cmd = isMac ? e.metaKey : e.ctrlKey;
-  
-        if (!cmd || !e.shiftKey) return;
-  
-        const key = e.key.toLowerCase();
-  
-        e.preventDefault();
-  
-        switch (key) {
-          case "b":
-            transformSelection(value, textareaRef, setValue, "**", "**", "text");
-            break;
-          case "i":
-            transformSelection(value, textareaRef, setValue, "*", "*", "text");
-            break;
-          case "s":
-            transformSelection(value, textareaRef, setValue, "~~", "~~", "text");
-            break;
-          case "l":
-            insertLink(value, textareaRef, setValue);
-            break;
-          case "o":
-            prefixSelectionLines(value, textareaRef, setValue, "1. ", "item", true);
-            break;
-          case "u":
-            prefixSelectionLines(value, textareaRef, setValue, "- ", "item");
-            break;
-          case "k":
-            insertCode(value, textareaRef, setValue);
-            break;
-          case "q":
-            prefixSelectionLines(value, textareaRef, setValue, "> ", "text");
-            break;
-          case "h":
-            insertHeading(value, textareaRef, setValue, 2);
-            break;
-          case "t":
-            insertTable(value, textareaRef, setValue);
-            break;
-          case "g":
-            insertImage(value, textareaRef, setValue);
-            break;
-          default:
-            return;
-        }
-      };
-  
-      window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [value, setValue, textareaRef]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (document.activeElement !== textareaRef.current) return;
+      const isMac = navigator.platform.toUpperCase().includes("MAC");
+      const cmd = isMac ? e.metaKey : e.ctrlKey;
+
+      if (!cmd || !e.shiftKey) return;
+
+      const key = e.key.toLowerCase();
+
+      e.preventDefault();
+
+      switch (key) {
+        case "b":
+          transformSelection(value, textareaRef, setValue, "**", "**", "text");
+          break;
+        case "i":
+          transformSelection(value, textareaRef, setValue, "*", "*", "text");
+          break;
+        case "s":
+          transformSelection(value, textareaRef, setValue, "~~", "~~", "text");
+          break;
+        case "l":
+          insertLink(value, textareaRef, setValue);
+          break;
+        case "o":
+          prefixSelectionLines(
+            value,
+            textareaRef,
+            setValue,
+            "1. ",
+            "item",
+            true,
+          );
+          break;
+        case "u":
+          prefixSelectionLines(value, textareaRef, setValue, "- ", "item");
+          break;
+        case "k":
+          insertCode(value, textareaRef, setValue);
+          break;
+        case "q":
+          prefixSelectionLines(value, textareaRef, setValue, "> ", "text");
+          break;
+        case "h":
+          insertHeading(value, textareaRef, setValue, 2);
+          break;
+        case "t":
+          insertTable(value, textareaRef, setValue);
+          break;
+        case "g":
+          insertImage(value, textareaRef, setValue);
+          break;
+        default:
+          return;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [value, setValue, textareaRef]);
 
   return (
     <div className="flex flex-wrap items-center gap-2 bg-gold px-6 pb-3">
