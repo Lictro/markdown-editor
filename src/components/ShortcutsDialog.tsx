@@ -61,20 +61,29 @@ export default function ShortcutsDialog({
       <DialogContent
         className="
           w-full max-w-none rounded-none
-          h-dvh overflow-hidden
-          landscape:max-h-[90dvh]
-          sm:h-auto sm:max-w-3xl sm:rounded-lg sm:max-h-none
+          h-dvh
+          flex flex-col
+          overflow-hidden
+
+          sm:h-auto sm:max-w-3xl sm:rounded-lg sm:max-h-[90vh]
         "
       >
-        <DialogHeader>
+        <DialogHeader className="shrink-0">
           <DialogTitle>Keyboard Shortcuts</DialogTitle>
           <DialogDescription>
             Use these shortcuts to format text quickly while editing Markdown.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 flex flex-col px-6 py-4 min-h-0">
-          <div className="grid gap-3 sm:grid-cols-2 overflow-y-auto">
+        <div className="flex-1 flex flex-col p-4 min-h-0">
+          <div
+            className="
+              flex-1 min-h-0
+              grid gap-3 sm:grid-cols-2
+
+              overflow-y-auto
+            "
+          >
             {shortcuts.map((shortcut) => (
               <div
                 key={shortcut.label}
