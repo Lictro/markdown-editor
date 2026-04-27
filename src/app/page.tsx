@@ -34,14 +34,6 @@ export default function Home() {
     setCursorUpdateTrigger((prev) => prev + 1);
   }, []);
 
-  useMemo(() => {
-    if (viewMode === "editor") {
-      previewRef.current?.scrollTo({ top: 0 });
-    } else {
-      editorRef.current?.scrollTo({ top: 0 });
-    }
-  }, [viewMode]);
-
   const metrics = useMemo(() => {
     return getMetrics(markdown, editorRef?.current ?? undefined);
   }, [markdown, cursorUpdateTrigger]);
@@ -74,21 +66,19 @@ export default function Home() {
       />
 
       <div className="flex-1 min-h-0 flex flex-col">
-        <div className="sm:grid sm:grid-cols-2 h-full min-h-0 scrollbar">
+        <div className="grid grid-cols-2 h-full min-h-0 scrollbar">
           <Editor
             value={markdown}
             onChange={setMarkdown}
             textareaRef={editorRef}
             onScroll={() => syncScroll("editor")}
             onCursorMove={handleCursorMove}
-            viewMode={viewMode}
             setViewMode={setViewMode}
           />
           <Preview
             content={markdown}
             setViewMode={setViewMode}
             previewRef={previewRef}
-            viewMode={viewMode}
             onScroll={() => syncScroll("preview")}
           />
         </div>

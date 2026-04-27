@@ -7,7 +7,6 @@ interface EditorProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   onScroll: () => void;
   onCursorMove: () => void;
-  viewMode: "editor" | "preview";
   setViewMode: (mode: "editor" | "preview") => void;
 }
 
@@ -17,15 +16,14 @@ export default function Editor({
   textareaRef,
   onScroll,
   onCursorMove,
-  viewMode,
-  setViewMode
+  setViewMode,
 }: EditorProps) {
   const handleCursorPosition = useCallback(() => {
     onCursorMove();
   }, [onCursorMove]);
 
   return (
-    <div className={`border-r border-warm-gray-light h-full flex flex-col min-h-0 sm:block ${viewMode === "editor" ? "block" : "hidden"}`}>
+    <div className="border-r border-warm-gray-light h-full flex flex-col min-h-0">
       <div className="py-2 px-4 bg-charcoal-dark shrink-0 flex justify-between items-center">
         <span>MARKDOWN</span>
         <button

@@ -6,7 +6,6 @@ interface PreviewProps {
   content: string;
   previewRef: React.RefObject<HTMLDivElement | null>;
   onScroll: () => void;
-  viewMode: "editor" | "preview";
   setViewMode: (mode: "editor" | "preview") => void;
 }
 
@@ -14,11 +13,10 @@ export default function Preview({
   content,
   previewRef,
   onScroll,
-  viewMode,
   setViewMode,
 }: PreviewProps) {
   return (
-    <div className={`h-full flex flex-col min-h-0 sm:block ${viewMode === "preview" ? "block" : "hidden"}`}>
+    <div className="h-full flex flex-col min-h-0">
       <div className="py-2 px-4 bg-charcoal-dark shrink-0 flex justify-between items-center">
         <span>PREVIEW</span>
         <button
