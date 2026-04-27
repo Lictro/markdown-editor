@@ -7,6 +7,7 @@ interface EditorProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   onScroll: () => void;
   onCursorMove: () => void;
+  viewMode: "editor" | "preview";
   setViewMode: (mode: "editor" | "preview") => void;
 }
 
@@ -16,6 +17,7 @@ export default function Editor({
   textareaRef,
   onScroll,
   onCursorMove,
+  viewMode,
   setViewMode,
 }: EditorProps) {
   const handleCursorPosition = useCallback(() => {
@@ -23,7 +25,7 @@ export default function Editor({
   }, [onCursorMove]);
 
   return (
-    <div className="border-r border-warm-gray-light h-full flex flex-col min-h-0">
+    <div className={`sm:border-r sm:border-warm-gray-light h-full flex-col min-h-0 ${viewMode === "editor" ? "flex" : "hidden sm:flex"}`}>
       <div className="py-2 px-4 bg-charcoal-dark shrink-0 flex justify-between items-center">
         <span>MARKDOWN</span>
         <button
@@ -42,7 +44,7 @@ export default function Editor({
         onKeyUp={handleCursorPosition}
         onMouseUp={handleCursorPosition}
         onSelect={handleCursorPosition}
-        className="flex-1 min-h-0 w-full p-4 bg-transparent outline-none overflow-auto resize-none"
+        className="flex-1 min-h-0 w-full h-full p-4 bg-transparent outline-none overflow-auto resize-none"
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
