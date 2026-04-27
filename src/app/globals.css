@@ -169,7 +169,7 @@ body {
 }
 
 .scrollbar {
-  scrollbar-width: thin;
+  scrollbar-width: thin; 
   scrollbar-color: #888 #313437;
 }
 

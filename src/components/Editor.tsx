@@ -23,7 +23,7 @@ export default function Editor({
   }, [onCursorMove]);
 
   return (
-    <div className="md:border-r md:border-warm-gray-light h-full flex flex-col min-h-0">
+    <div className="border-r border-warm-gray-light h-full flex flex-col min-h-0">
       <div className="py-2 px-4 bg-charcoal-dark shrink-0 flex justify-between items-center">
         <span>MARKDOWN</span>
         <button
